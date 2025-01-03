@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+Lookup
+{% endblock %}
+
+{% block content %}
+<h1>Lookup</h1>
+<form action="{{url_for('lookup')}}" method="POST">
+    Board Game:<br>
+    <input type="text" name="board_game">
+    <br><br>
+    <input type="submit" value="Submit">
+    <br><br>
+</form>
+{% if message %}
+    {{message}}
+{% endif %}
+{% endblock %}
