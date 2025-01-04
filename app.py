@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request
+from forms import BoardGameForm
 
 app = Flask(__name__)
+
+app.config["SECRET_KEY"] = "dfewfew123213rwdsgert34tgfd1234trgf"  # A secret key required for the CSRF to work (it's not very secret at the moment)
 
 @app.route("/")
 def home():
@@ -8,11 +11,14 @@ def home():
 
 @app.route("/lookup", methods=["GET", "POST"])
 def lookup():
-    if request.method == "POST":
-        board_game = request.form["board_game"]
-        return render_template("lookup.html", message=f"You searched for {board_game}.")
-    return render_template("lookup.html")
-
+    form = BoardGameForm()
+    if form.validate_on_submit():
+        print(f"Board Game: {form.board_game.data}")
+        return render_template("lookup.html", form=form, message=f"{form.board_game.data} successfully looked up!")
+    elif form.errors:
+        print(form.errors.items())
+        print(form.board_game.errors)
+    return render_template("lookup.html", form=form)
 
 if __name__ == "__main__":
     app.run(debug=True)

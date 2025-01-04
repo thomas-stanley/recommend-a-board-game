@@ -7,13 +7,22 @@ Lookup
 {% block content %}
 <h1>Lookup</h1>
 <form action="{{url_for('lookup')}}" method="POST">
-    Board Game:<br>
-    <input type="text" name="board_game">
+    {{  form.board_game.label  }}:<br>
+    {{  form.board_game}}
+    {% if form.board_game.errors %}
+    <br>
+        <ul>
+            {% for error in form.board_game.errors %}
+            <li id="error">{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <br><br>
-    <input type="submit" value="Submit">
+    {{ form.csrf_token}} <!-- Built-in from the FlaskForm class that prevents Cross-Site Request Forgery -->
+    {{ form.submit  }}
     <br><br>
 </form>
 {% if message %}
-    {{message}}
+    {{ message }}
 {% endif %}
 {% endblock %}
