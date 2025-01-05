@@ -1,12 +1,5 @@
 import pandas as pd
 
-def find_game(game_name):
-    board_game_df = pd.read_csv("boardgames_ranks.csv")
-    # game_present = (board_game_df["name"] == game_name).any()
-    game_present = board_game_df["name"].str.contains(game_name, case=False).any()  # Not case-sensitive and includes substrings
-    return game_present
-
-
 def search_results(user_search):
     board_game_df = pd.read_csv("boardgames_ranks.csv")
     search_results = board_game_df[board_game_df["name"].str.contains(user_search, case=False)]

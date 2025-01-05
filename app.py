@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from forms import BoardGameForm
-from data import find_game, search_results
+from data import search_results
 
 app = Flask(__name__)
 
