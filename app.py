@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from forms import BoardGameForm
-from data import find_game
+from data import find_game, search_results
 
 app = Flask(__name__)
 
@@ -14,15 +14,18 @@ def home():
 def lookup():
     form = BoardGameForm()
     if form.validate_on_submit():
-        if find_game(form.board_game.data):
-            print(f"Valid Board Game: {form.board_game.data}")
-            return render_template("lookup.html", form=form, message=f"{form.board_game.data} successfully found!")
+        matching_games = search_results(form.board_game.data)
+        if len(matching_games) > 0:
+            print(f"Valid search: {form.board_game.data}")
+            return render_template("lookup.html", form=form, games=matching_games["name"])
         else:
-            print(f"Invalid Board Game: {form.board_game.data}")
-            return render_template("lookup.html", form=form, message=f"{form.board_game.data} could not be found!")
+            form.board_game.errors = [f"{form.board_game.data} could not be found!"]
+            print(f"Invalid search: {form.board_game.data}")
+
     elif form.errors:
         print(form.errors.items())
         print(form.board_game.errors)
+
     return render_template("lookup.html", form=form)
 
 if __name__ == "__main__":

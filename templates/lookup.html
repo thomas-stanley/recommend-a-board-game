@@ -9,20 +9,27 @@ Lookup
 <form action="{{url_for('lookup')}}" method="POST">
     {{  form.board_game.label  }}:<br>
     {{  form.board_game}}
-    {% if form.board_game.errors %}
-    <br>
-        <ul>
-            {% for error in form.board_game.errors %}
-            <li id="error">{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
     <br><br>
     {{ form.csrf_token}} <!-- Built-in from the FlaskForm class that prevents Cross-Site Request Forgery -->
     {{ form.submit  }}
     <br><br>
 </form>
-{% if message %}
-    {{ message }}
+
+{% if games is defined %}
+    <h3>Games found:</h3>
+    {% for result in games %}
+        {{ result }}
+        <br>
+    {% endfor %}
 {% endif %}
+
+{% if form.board_game.errors %}
+    <p id="error">
+        {% for error in form.board_game.errors %}
+            {{ error }}
+            <br>
+        {% endfor %}
+    </p>
+{% endif %}
+
 {% endblock %}
