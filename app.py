@@ -28,5 +28,9 @@ def add():
 
     return render_template("add.html", form=form)
 
+@app.route("/rate", methods=["GET", "POST"])
+def rate():
+    return render_template("rate.html")
+
 if __name__ == "__main__":
     app.run(debug=True)
