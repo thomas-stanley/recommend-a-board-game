@@ -10,14 +10,14 @@ app.config["SECRET_KEY"] = "dfewfew123213rwdsgert34tgfd1234trgf"  # A secret key
 def home():
     return render_template("home.html")
 
-@app.route("/lookup", methods=["GET", "POST"])
-def lookup():
+@app.route("/add", methods=["GET", "POST"])
+def add():
     form = BoardGameForm()
     if form.validate_on_submit():
         matching_games = search_results(form.board_game.data)
         if len(matching_games) > 0:
             print(f"Valid search: {form.board_game.data}")
-            return render_template("lookup.html", form=form, games=matching_games["name"])
+            return render_template("add.html", form=form, games=matching_games["name"])
         else:
             form.board_game.errors = [f"{form.board_game.data} could not be found!"]
             print(f"Invalid search: {form.board_game.data}")
@@ -26,7 +26,7 @@ def lookup():
         print(form.errors.items())
         print(form.board_game.errors)
 
-    return render_template("lookup.html", form=form)
+    return render_template("add.html", form=form)
 
 if __name__ == "__main__":
     app.run(debug=True)
