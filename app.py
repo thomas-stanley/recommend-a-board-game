@@ -6,6 +6,8 @@ app = Flask(__name__)
 
 app.config["SECRET_KEY"] = "dfewfew123213rwdsgert34tgfd1234trgf"  # A secret key required for the CSRF to work (it's not very secret at the moment)
 
+selected_games = []
+
 @app.route("/")
 def home():
     return render_template("home.html")
