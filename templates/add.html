@@ -6,13 +6,14 @@ Add Games
 
 {% block content %}
 <h1>Add Board Games</h1>
+<h2>To add a game, search it up and then click on it. Once you have finished adding games, click here.</h2>
 <form action="{{url_for('add')}}" method="POST">
     {{  form.board_game.label  }}:<br>
     {{  form.board_game}}
     <br><br>
     {{ form.csrf_token}} <!-- Built-in from the FlaskForm class that prevents Cross-Site Request Forgery -->
     {{ form.submit  }}
-    <br><br>
+    <br>
 </form>
 
 {% if games is defined %}
