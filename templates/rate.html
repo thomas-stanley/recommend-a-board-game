@@ -5,5 +5,9 @@ Rate
 {% endblock %}
 
 {% block content %}
-<h1>Rating goes here.</h1>
+<h1>Here are the board games that you added:</h1>
+{% for game in selected_games %}
+    {{ game }}
+    <br>
+{% endfor %}
 {% endblock %}
