@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from forms import SearchGame, PickGame
 from data import search_results
 
@@ -20,16 +20,21 @@ def add():
         matching_games = search_results(form.board_game.data)
         if len(matching_games) > 0:
             print(f"Valid search: {form.board_game.data}")
-            return render_template("add.html", form=form, results=results, games=matching_games["name"])
+            return render_template("add.html", form=form, results=results, games=matching_games["name"], amount_added=f"You currently have {len(selected_games)} games added.")
         else:
             form.board_game.errors = [f"{form.board_game.data} could not be found!"]
             print(f"Invalid search: {form.board_game.data}")
+    elif results.add_game.data:
+        selected_games.append(results.game_name.data)
+        print(f"Game added: {results.game_name.data}")
+        print(f"Selected games: {selected_games}")
+        return redirect(url_for("add"))
 
     elif form.errors:
         print(form.errors.items())
         print(form.board_game.errors)
 
-    return render_template("add.html", form=form)
+    return render_template("add.html", form=form, amount_added=f"You currently have {len(selected_games)} games added.")
 
 @app.route("/rate", methods=["GET", "POST"])
 def rate():
