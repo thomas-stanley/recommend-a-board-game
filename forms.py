@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, HiddenField
 from wtforms.validators import InputRequired
 
 class SearchGame(FlaskForm):
@@ -7,4 +7,5 @@ class SearchGame(FlaskForm):
     search = SubmitField("Submit")
 
 class PickGame(FlaskForm):
+    game_name = HiddenField("Game Name")
     add_game = SubmitField()

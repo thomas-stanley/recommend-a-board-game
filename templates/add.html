@@ -8,21 +8,21 @@ Add
 <h1>Add Board Games</h1>
 <h2>To add a game, search it up and then click on it. Once you have finished adding games, click <a href="{{url_for('rate')}}">here</a>.</h2>
 <form action="{{url_for('add')}}" method="POST">
-    {{  form.board_game.label }}:<br>
-    {{  form.board_game }}
+    {{ form.hidden_tag() }} <!-- Built-in from the FlaskForm class that prevents Cross-Site Request Forgery and also includes hidden fields-->
+    {{ form.board_game.label }}:<br>
+    {{ form.board_game }}
     <br><br>
-    {{ form.csrf_token }} <!-- Built-in from the FlaskForm class that prevents Cross-Site Request Forgery -->
     {{ form.search }}
     <br>
 </form>
 
 {% if games is defined %}
     <h3>Games found:</h3>
-    {% for result in games %}
+    {% for game in games %}
+        {{ game }}
         <form action="{{url_for('add')}}" method="POST">
-            {{ form.csrf_token }}
-            {{ result }}
-            {{ options.add_game }}
+            {{ form.hidden_tag() }}
+            {{ results.add_game }}
         </form>
         <br>
     {% endfor %}
