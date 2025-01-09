@@ -2,7 +2,6 @@ import pandas as pd
 
 def search_results(user_search):
     board_game_df = pd.read_csv("boardgames_ranks.csv")
-    board_game_df.sort
     search_results = board_game_df[board_game_df["name"].str.contains(user_search, case=False)]
     return pd.DataFrame(search_results["name"])
 
