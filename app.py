@@ -38,7 +38,7 @@ def add():
 
 @app.route("/rate", methods=["GET", "POST"])
 def rate():
-    return render_template("rate.html")
+    return render_template("rate.html", selected_games=selected_games)
 
 if __name__ == "__main__":
     app.run(debug=True)
