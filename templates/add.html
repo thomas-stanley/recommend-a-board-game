@@ -20,6 +20,7 @@ Add
     <h3>Games found:</h3>
     {% for result in games %}
         <form action="{{url_for('add')}}" method="POST">
+            {{ options.choose }}
             <input type="hidden" name="result" value="{{ result }}">
             <button type="submit">{{ result }}</button>
         </form>
