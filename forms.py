@@ -4,7 +4,7 @@ from wtforms.validators import InputRequired
 
 class SearchGame(FlaskForm):
     board_game = StringField("Board Game", validators=[InputRequired()])
-    submit = SubmitField("Submit")
+    search = SubmitField("Submit")
 
 class PickGame(FlaskForm):
-    choose = SubmitField()
+    add_game = SubmitField()

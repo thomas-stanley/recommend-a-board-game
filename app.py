@@ -15,12 +15,12 @@ def home():
 @app.route("/add", methods=["GET", "POST"])
 def add():
     form = SearchGame()
-    options = PickGame()
+    results = PickGame()
     if form.validate_on_submit():
         matching_games = search_results(form.board_game.data)
         if len(matching_games) > 0:
             print(f"Valid search: {form.board_game.data}")
-            return render_template("add.html", form=form, options=options, games=matching_games["name"])
+            return render_template("add.html", form=form, results=results, games=matching_games["name"])
         else:
             form.board_game.errors = [f"{form.board_game.data} could not be found!"]
             print(f"Invalid search: {form.board_game.data}")

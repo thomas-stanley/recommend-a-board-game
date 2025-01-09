@@ -12,7 +12,7 @@ Add
     {{  form.board_game }}
     <br><br>
     {{ form.csrf_token }} <!-- Built-in from the FlaskForm class that prevents Cross-Site Request Forgery -->
-    {{ form.submit }}
+    {{ form.search }}
     <br>
 </form>
 
@@ -20,9 +20,9 @@ Add
     <h3>Games found:</h3>
     {% for result in games %}
         <form action="{{url_for('add')}}" method="POST">
-            {{ options.choose }}
-            <input type="hidden" name="result" value="{{ result }}">
-            <button type="submit">{{ result }}</button>
+            {{ form.csrf_token }}
+            {{ result }}
+            {{ options.add_game }}
         </form>
         <br>
     {% endfor %}
