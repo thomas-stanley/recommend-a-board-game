@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 from forms import BoardGameForm
 from data import search_results
 
