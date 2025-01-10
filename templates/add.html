@@ -24,7 +24,7 @@ Add
     {% for game in games %}
         {{ game }}
         <form action="{{url_for('add')}}" method="POST">
-            {{ form.hidden_tag() }}
+            {{ results.hidden_tag() }}
             <input type="hidden" name="game_name" value="{{ game }}">
             {{ results.add_game }}
         </form>
