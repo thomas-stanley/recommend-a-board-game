@@ -5,9 +5,15 @@ Rate
 {% endblock %}
 
 {% block content %}
-<h1>Here are the board games that you added:</h1>
-{% for game in selected_games %}
-    {{ game }}
-    <br>
-{% endfor %}
+<h1>Rate the games you chose:</h1>
+<form action="{{url_for('rate')}}" method="POST">
+    {{ ratings.hidden_tag() }}
+    {% for rating_form in ratings.game_ratings %}
+        {{ rating_form.hidden_tag() }}
+        {{ rating_form.game_name.data }}:<br>
+        {{ rating_form.rating }}
+        <hr>
+    {% endfor %}
+    {{ ratings.submit }}
+</form>
 {% endblock %}
