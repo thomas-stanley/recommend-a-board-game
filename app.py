@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for
-from forms import SearchGame, PickGame
+from forms import SearchGame, PickGame, RateGame
 from data import search_results
 
 app = Flask(__name__)
@@ -38,7 +38,8 @@ def add():
 
 @app.route("/rate", methods=["GET", "POST"])
 def rate():
-    return render_template("rate.html", selected_games=selected_games)
+    ratings = RateGame()
+    return render_template("rate.html", ratings=ratings, selected_games=selected_games)
 
 if __name__ == "__main__":
     app.run(debug=True)
