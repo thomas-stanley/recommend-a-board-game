@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, session
 from forms import SearchGame, PickGame, RateGame
 from data import search_results
 
@@ -38,8 +38,25 @@ def add():
 
 @app.route("/rate", methods=["GET", "POST"])
 def rate():
-    ratings = RateGame()
-    return render_template("rate.html", ratings=ratings, selected_games=selected_games)
+    dict_selected_games = [{"game_name": game} for game in selected_games]
+    ratings = RateGame(game_ratings=dict_selected_games)
+    if ratings.validate_on_submit():
+        print(f"Valid Ratings: {ratings.game_ratings.data}")
+        print(ratings.game_ratings.data)
+        session["ratings"] = ratings.game_ratings.data  # This should be a temporary solution as there is a byte limit on the session data
+        return redirect(url_for("analysis"))
+
+    elif ratings.errors:
+        print(ratings.errors.items())
+        print(ratings.game_ratings.errors)
+
+    return render_template("rate.html", ratings=ratings)
+
+@app.route("/analysis", methods=["GET"])
+def analysis():
+    ratings_data = session.get("ratings", None)  # Fetches the data from the session
+    return render_template("analysis.html", ratings_data=ratings_data)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
