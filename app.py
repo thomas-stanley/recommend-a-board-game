@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, session
 from forms import SearchGame, PickGame, RateGame
-from data import search_results
+from data import search_results, find_id
+from api import game_details
 
 app = Flask(__name__)
 
@@ -55,6 +56,9 @@ def rate():
 @app.route("/analysis", methods=["GET"])
 def analysis():
     ratings_data = session.get("ratings", None)  # Fetches the data from the session
+    for game in ratings_data:
+        game["id"] = find_id(game["game_name"])
+        game["mechanics"] = game_details(game["id"])
     return render_template("analysis.html", ratings_data=ratings_data)
 
 
