@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+Recommend
+{% endblock %}
+
+{% block content %}
+<h1>This website will recommend board games to you!</h1>
+<p>
+    This will be done by asking you for various board games that you have played and whether you liked them or not.
+    <br>
+    The website will then use this information to recommend board games that you might like.
+    <br>
+    Simple as that.
+    <br>
+    Click <a href="{{url_for('add')}}">here</a> to get started.
+</p>
+{% endblock %}
