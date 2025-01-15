@@ -12,7 +12,7 @@ def find_id(game_name):
 
 def suitable_games():
     board_game_df = pd.read_csv("data/boardgames_ranks.csv")
-    sorted_games = board_game_df.sort_values(by="usersrated", ascending=False).head(40) # Change head to however many games you want to test
+    sorted_games = board_game_df.sort_values(by="usersrated", ascending=False).head(500) # Change head to however many games you want to test
     return sorted_games[["name", "id"]] 
 
 def main():
