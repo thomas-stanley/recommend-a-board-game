@@ -1,7 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, session
+from collections import OrderedDict
 from forms import SearchGame, PickGame, RateGame
-from data import search_results, find_id
-from api import game_details
+from data import search_results, find_id, suitable_games
+from api import game_details, recommend_games
 
 app = Flask(__name__)
 
@@ -55,12 +56,20 @@ def rate():
 
 @app.route("/analysis", methods=["GET"])
 def analysis():
-    ratings_data = session.get("ratings", None)  # Fetches the data from the session
+    ratings_data = session.get("ratings", None)  # Fetches the data from the session, ratings_data holds game_name, rating, csrf_token
+    weighted_mechanics = {}
     for game in ratings_data:
         game["id"] = find_id(game["game_name"])
         game["mechanics"] = game_details(game["id"])
-    return render_template("analysis.html", ratings_data=ratings_data)
-
+        for mechanic in game["mechanics"]:
+            if mechanic not in weighted_mechanics:
+                weighted_mechanics[mechanic] = 0
+            weighted_mechanics[mechanic] += int(game["rating"])
+    weighted_mechanics = OrderedDict(sorted(weighted_mechanics.items(), key=lambda x: x[1], reverse=True))  # Sorts the dictionary by value
+    user_games = [game["game_name"] for game in ratings_data]
+    games_to_check = suitable_games()
+    recommended_games = recommend_games(games_to_check, weighted_mechanics, user_games)
+    return render_template("analysis.html", recommended_games=recommended_games)
 
 if __name__ == "__main__":
     app.run(debug=True)
