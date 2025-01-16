@@ -68,7 +68,7 @@ def analysis():
     weighted_mechanics = OrderedDict(sorted(weighted_mechanics.items(), key=lambda x: x[1], reverse=True))  # Sorts the dictionary by value
     user_games = [game["game_name"] for game in ratings_data]
     games_to_check = suitable_games()
-    recommended_games = recommend_games(games_to_check, weighted_mechanics, user_games)
+    recommended_games = recommend_games(games_to_check, weighted_mechanics, user_games)[:5]  # First 5 elements of the recommended games
     return render_template("analysis.html", recommended_games=recommended_games)
 
 if __name__ == "__main__":
