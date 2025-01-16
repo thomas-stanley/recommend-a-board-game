@@ -54,7 +54,7 @@ def recommend_games(games_to_check, weighted_mechanics, user_games):
                     for mechanic in mechanics:
                         score += weighted_mechanics[mechanic]
                     print(f"Game: {game_name}, Score: {score}")
-                    if score > 5:  # Minimum score to be recommended
+                    if score > 0:  # Minimum score to be recommended
                         recommended_games.append((game_name, score))
         sleep(1)
     sorted_games = sorted(recommended_games, key=lambda x: x[1], reverse=True)
