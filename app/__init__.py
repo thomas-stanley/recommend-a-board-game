@@ -1,7 +1,10 @@
+import os
 from flask import Flask
 from config import config
 
-def create_app(config_name="default"):
+def create_app():
+
+    config_name = os.getenv("FLASK_ENV", "default")
 
     app = Flask(__name__)
 

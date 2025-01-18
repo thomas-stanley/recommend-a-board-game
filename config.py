@@ -15,12 +15,14 @@ class Config:  # Base config class for all environments
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    ENV = "development"
 
 class ProductionConfig(Config):
-    pass
+    ENV = "production"
 
 class TestingConfig(Config):
     TESTING = True
+    ENV = "testing"
 
 config = {
     "development": DevelopmentConfig,
