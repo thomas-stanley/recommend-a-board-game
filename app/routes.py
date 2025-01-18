@@ -6,10 +6,11 @@ from app.api import game_details, recommend_games
 
 board_games = Blueprint("board_games", __name__)
 
-selected_games = []
 
 @board_games.route("/")
 def home():
+    if "selected games" not in session:
+        session["selected games"] = []
     return render_template("home.html")
 
 @board_games.route("/add", methods=["GET", "POST"])
@@ -20,30 +21,32 @@ def add():
         matching_games = search_results(form.board_game.data)
         if len(matching_games) > 0:
             print(f"Valid search: {form.board_game.data}")
-            return render_template("add.html", form=form, results=results, games=matching_games["name"], amount_added=f"You currently have {len(selected_games)} games added.")
+            return render_template("add.html", form=form, results=results, games=matching_games["name"], amount_added=f"You currently have {len(session["selected_games"])} games added.")
         else:
             form.board_game.errors = [f"{form.board_game.data} could not be found!"]
             print(f"Invalid search: {form.board_game.data}")
     elif results.add_game.data:
-        selected_games.append(results.game_name.data)
+        session["selected_games"].append(results.game_name.data)
+        session.modified = True  # Mutable data structure so the session needs to know an update has occurred
         print(f"Game added: {results.game_name.data}")
-        print(f"Selected games: {selected_games}")
+        print(f"Selected games: {session["selected_games"]}")
         return redirect(url_for("board_games.add"))
 
     elif form.errors:
         print(form.errors.items())
         print(form.board_game.errors)
 
-    return render_template("add.html", form=form, amount_added=f"You currently have {len(selected_games)} games added.")
+    return render_template("add.html", form=form, amount_added=f"You currently have {len(session["selected_games"])} games added.")
 
 @board_games.route("/rate", methods=["GET", "POST"])
 def rate():
-    dict_selected_games = [{"game_name": game} for game in selected_games]
+    dict_selected_games = [{"game_name": game} for game in session["selected_games"]]
     ratings = RateGame(game_ratings=dict_selected_games)
     if ratings.validate_on_submit():
         print(f"Valid Ratings: {ratings.game_ratings.data}")
         print(ratings.game_ratings.data)
-        session["ratings"] = ratings.game_ratings.data  # This should be a temporary solution as there is a byte limit on the session data
+        if "ratings" not in session:
+            session["ratings"] = ratings.game_ratings.data  # This should be a temporary solution as there is a byte limit on the session data
         return redirect(url_for("board_games.analysis"))
 
     elif ratings.errors:
@@ -54,7 +57,7 @@ def rate():
 
 @board_games.route("/analysis", methods=["GET"])
 def analysis():
-    ratings_data = session.get("ratings", None)  # Fetches the data from the session, ratings_data holds game_name, rating, csrf_token
+    ratings_data = session["ratings"]  # Fetches the data from the session, ratings_data holds game_name, rating, csrf_token
     weighted_mechanics = {}
     for game in ratings_data:
         game["id"] = find_id(game["game_name"])
