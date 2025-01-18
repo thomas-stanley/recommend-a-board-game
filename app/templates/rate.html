@@ -6,7 +6,7 @@ Rate
 
 {% block content %}
 <h1>Rate the games you chose:</h1>
-<form action="{{url_for('rate')}}" method="POST">
+<form action="{{url_for('board_games.rate')}}" method="POST">
     {{ ratings.hidden_tag() }}
     {% for rating_form in ratings.game_ratings %}
         {{ rating_form.hidden_tag() }}

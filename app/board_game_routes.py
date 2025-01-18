@@ -1,20 +1,18 @@
-from flask import Flask, render_template, redirect, url_for, session
+from flask import Flask, Blueprint, render_template, redirect, url_for, session
 from collections import OrderedDict
-from forms import SearchGame, PickGame, RateGame
-from data import search_results, find_id, suitable_games
-from api import game_details, recommend_games
+from app.forms import SearchGame, PickGame, RateGame
+from app.data import search_results, find_id, suitable_games
+from app.api import game_details, recommend_games
 
-app = Flask(__name__)
-
-app.config["SECRET_KEY"] = "dfewfew123213rwdsgert34tgfd1234trgf"  # A secret key required for the CSRF to work (it's not very secret at the moment)
+board_games = Blueprint("board_games", __name__)
 
 selected_games = []
 
-@app.route("/")
+@board_games.route("/")
 def home():
     return render_template("home.html")
 
-@app.route("/add", methods=["GET", "POST"])
+@board_games.route("/add", methods=["GET", "POST"])
 def add():
     form = SearchGame()
     results = PickGame()
@@ -30,7 +28,7 @@ def add():
         selected_games.append(results.game_name.data)
         print(f"Game added: {results.game_name.data}")
         print(f"Selected games: {selected_games}")
-        return redirect(url_for("add"))
+        return redirect(url_for("board_games.add"))
 
     elif form.errors:
         print(form.errors.items())
@@ -38,7 +36,7 @@ def add():
 
     return render_template("add.html", form=form, amount_added=f"You currently have {len(selected_games)} games added.")
 
-@app.route("/rate", methods=["GET", "POST"])
+@board_games.route("/rate", methods=["GET", "POST"])
 def rate():
     dict_selected_games = [{"game_name": game} for game in selected_games]
     ratings = RateGame(game_ratings=dict_selected_games)
@@ -46,7 +44,7 @@ def rate():
         print(f"Valid Ratings: {ratings.game_ratings.data}")
         print(ratings.game_ratings.data)
         session["ratings"] = ratings.game_ratings.data  # This should be a temporary solution as there is a byte limit on the session data
-        return redirect(url_for("analysis"))
+        return redirect(url_for("board_games.analysis"))
 
     elif ratings.errors:
         print(ratings.errors.items())
@@ -54,7 +52,7 @@ def rate():
 
     return render_template("rate.html", ratings=ratings)
 
-@app.route("/analysis", methods=["GET"])
+@board_games.route("/analysis", methods=["GET"])
 def analysis():
     ratings_data = session.get("ratings", None)  # Fetches the data from the session, ratings_data holds game_name, rating, csrf_token
     weighted_mechanics = {}
@@ -70,6 +68,3 @@ def analysis():
     games_to_check = suitable_games()
     recommended_games = recommend_games(games_to_check, weighted_mechanics, user_games)[:5]  # First 5 elements of the recommended games
     return render_template("analysis.html", recommended_games=recommended_games)
-
-if __name__ == "__main__":
-    app.run(debug=True)

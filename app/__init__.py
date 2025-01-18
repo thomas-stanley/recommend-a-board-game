@@ -7,3 +7,7 @@ def create_app(config_name="default"):
 
     app.config.from_object(config[config_name])
 
+    from app.board_game_routes import board_games
+    app.register_blueprint(board_games)
+
+    return app
