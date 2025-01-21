@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template, redirect, url_for, session
+from flask import Blueprint, render_template, redirect, url_for, session
 from collections import OrderedDict
 from app.forms import SearchGame, PickGame, RateGame
 from app.data import search_results, find_id, suitable_games
