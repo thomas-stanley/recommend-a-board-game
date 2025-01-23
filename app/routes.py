@@ -9,8 +9,8 @@ board_games = Blueprint("board_games", __name__)
 
 @board_games.route("/")
 def home():
-    if "selected games" not in session:
-        session["selected games"] = []
+    if "selected_games" not in session:
+        session["selected_games"] = []
     return render_template("home.html")
 
 @board_games.route("/add", methods=["GET", "POST"])
