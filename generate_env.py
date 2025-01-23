@@ -1,4 +1,5 @@
 import secrets
+import sys
 from pathlib import Path
 
 def generate_env(environment):
@@ -9,5 +10,9 @@ FLASK_ENV={environment}"""
     Path(".env").write_text(content)
 
 if __name__ == "__main__":
-    generate_env("production")
+    if len(sys.argv) > 1:
+        env = sys.argv[1]
+        valid_env = ["default", "production", "development", "testing"]
+        if env in valid_env:
+            generate_env(env)
 
