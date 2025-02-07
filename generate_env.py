@@ -6,7 +6,8 @@ def generate_env(environment):
     secret_key = secrets.token_urlsafe()
     content = f"""
 SECRET_KEY={secret_key}
-FLASK_ENV={environment}"""
+FLASK_ENV={environment}
+SQLITE_DATABASE_URI=sqlite:///data/boardgames.db"""
     Path(".env").write_text(content)
 
 if __name__ == "__main__":
