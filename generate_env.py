@@ -15,4 +15,6 @@ if __name__ == "__main__":
         valid_env = ["default", "production", "development", "testing"]
         if env in valid_env:
             generate_env(env)
+    else:
+        generate_env("default")  # Default to production
 
