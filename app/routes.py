@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, session
 from collections import OrderedDict
 from app.forms import SearchGame, PickGame, RateGame
-from app.data import search_results, find_id, suitable_games
+from app.data import find_id, suitable_games
+from app.sql_data import search_results
 from app.api import game_details, recommend_games
 
 board_games = Blueprint("board_games", __name__)
@@ -19,6 +20,7 @@ def add():
     results = PickGame()
     if form.validate_on_submit():
         matching_games = search_results(form.board_game.data)
+        print(matching_games)
         if len(matching_games) > 0:
             print(f"Valid search: {form.board_game.data}")
             return render_template("add.html", form=form, results=results, games=matching_games["name"], amount_added=f"You currently have {len(session["selected_games"])} games added.")
