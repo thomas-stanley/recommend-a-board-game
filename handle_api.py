@@ -3,10 +3,11 @@ from xml.etree import ElementTree as ET
 from time import sleep, time
 from app.models.game import db, BoardGame, Mechanic
 from flask import Flask
+import os
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data/boardgames.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL").replace("sqlite:///", "sqlite:///"+os.path.abspath(os.getcwd())+"/")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 BGG_API_DELAY = 2
@@ -28,21 +29,21 @@ def add_mechanics():
 
             for game_id, mechanics_list in game_mechanics.items():
                 print(f"{game_id}: {[mechanic[1] for mechanic in mechanics_list]}")
-                for mechanic in mechanics_list:
-                    mechanic = Mechanic.query.filter_by(id=mechanic[0]).first()
+                for game_mechanic in mechanics_list:
+                    mechanic = Mechanic.query.filter_by(id=game_mechanic[0]).first()
                     
                     if not mechanic:  # If the mechanic isn't already in the database
-                        mechanic = Mechanic(id=mechanic[0], name=mechanic[1])
+                        mechanic = Mechanic(id=game_mechanic[0], name=game_mechanic[1])
                         db.session.add(mechanic)
                         db.session.commit()
                     
-                    if mechanic not in game.mechanics:
-                        game.mechanics.append(mechanic)
+                    current_game = BoardGame.query.filter_by(id=game_id).first()
+                    if mechanic not in current_game.mechanics:
+                        current_game.mechanics.append(mechanic)
                 db.session.commit()
             end = time()
             time_taken = round(end - start, 2)
             print(f"Time taken: {time_taken} seconds")
-            sleep(BGG_API_DELAY - time_taken)  # Prevent throttling
 
 
 def game_details(game_ids):
@@ -55,7 +56,7 @@ def game_details(game_ids):
         if attempts > 5:
             raise Exception("Continuous errors fetching data")
         print("Error fetching data")
-        sleep(BGG_API_DELAY * 5 * attempts)  # Longer and longer delay
+        sleep(BGG_API_DELAY * attempts)  # Longer and longer delay
         response = requests.get(url)
     tree = ET.fromstring(response.content)
     all_board_games = tree.findall("item")
@@ -67,3 +68,8 @@ def game_details(game_ids):
                 mechanics.append([int(link.get("id")), link.get("value")])  # Must make sure that the id is an integer
         game_mechanics[game_id] = mechanics
     return game_mechanics
+
+
+if __name__ == "__main__":
+    with app.app_context():
+        add_mechanics()
