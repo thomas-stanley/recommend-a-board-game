@@ -1,23 +1,15 @@
-import pandas as pd
+from app.models.game import BoardGame
+from flask import current_app
 
 def search_results(user_search):
-    board_game_df = pd.read_csv("data/boardgames_ranks.csv")
-    search_results = board_game_df[board_game_df["name"].str.contains(user_search, case=False)]
-    return search_results.sort_values(by="usersrated", ascending=False)
+    with current_app.app_context():
+        search_results = BoardGame.query.filter(BoardGame.name.ilike(f"%{user_search}%")).order_by(BoardGame.usersrated.desc()).all()
+        return [game.name for game in search_results]
 
 def find_id(game_name):
-    board_game_df = pd.read_csv("data/boardgames_ranks.csv")
-    game_id = board_game_df[board_game_df["name"] == game_name]["id"]
-    return game_id.iloc[0]
+    game_id = BoardGame.query.filter(BoardGame.name == game_name).first()
+    return game_id.id
 
 def suitable_games():
-    board_game_df = pd.read_csv("data/boardgames_ranks.csv")
-    sorted_games = board_game_df.sort_values(by="usersrated", ascending=False).head(500) # Change head to however many games you want to test
-    return sorted_games[["name", "id"]] 
-
-def main():
-    print(search_results("Pandemic"))
-    print(find_id("Pandemic"))
-
-if __name__ == "__main__":
-    main()
+    sorted_games = BoardGame.query.order_by(BoardGame.usersrated.desc()).limit(500).all()  # Change the limit to however many games to test for
+    return tuple((game.id, game.name) for game in sorted_games)
