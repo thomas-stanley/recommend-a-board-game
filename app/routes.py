@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, session
 from collections import OrderedDict
 from app.forms import SearchGame, PickGame, RateGame
-from app.handle_db import search_results, find_id, suitable_games
-from app.bgg_api import game_details, recommend_games
+from app.handle_db import search_results, find_id, suitable_games, game_details, recommend_games
+# from app.bgg_api import recommend_games
 
 board_games = Blueprint("board_games", __name__)
 
@@ -46,8 +46,7 @@ def rate():
     if ratings.validate_on_submit():
         print(f"Valid Ratings: {ratings.game_ratings.data}")
         print(ratings.game_ratings.data)
-        if "ratings" not in session:
-            session["ratings"] = ratings.game_ratings.data  # This should be a temporary solution as there is a byte limit on the session data
+        session["ratings"] = ratings.game_ratings.data  # This should be a temporary solution as there is a byte limit on the session data
         return redirect(url_for("board_games.analysis"))
 
     elif ratings.errors:
@@ -67,8 +66,8 @@ def analysis():
             if mechanic not in weighted_mechanics:
                 weighted_mechanics[mechanic] = 0
             weighted_mechanics[mechanic] += int(game["rating"])
-    weighted_mechanics = OrderedDict(sorted(weighted_mechanics.items(), key=lambda x: x[1], reverse=True))  # Sorts the dictionary by value
+    # weighted_mechanics = OrderedDict(sorted(weighted_mechanics.items(), key=lambda x: x[1], reverse=True))  # Sorts the dictionary by value
     user_games = [game["game_name"] for game in ratings_data]
-    games_to_check = suitable_games()
-    recommended_games = recommend_games(games_to_check, weighted_mechanics, user_games)[:5]  # First 5 elements of the recommended games
+    # games_to_check = suitable_games()
+    recommended_games = recommend_games(weighted_mechanics, user_games)[:5]  # First 5 elements of the recommended games
     return render_template("analysis.html", recommended_games=recommended_games)
