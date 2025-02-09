@@ -1,8 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, session
 from collections import OrderedDict
 from app.forms import SearchGame, PickGame, RateGame
-from app.data import find_id, suitable_games
-from app.sql_data import search_results
+from app.data import search_results, find_id, suitable_games
 from app.api import game_details, recommend_games
 
 board_games = Blueprint("board_games", __name__)
