@@ -24,8 +24,8 @@ def recommend_games(games_to_check, weighted_mechanics, user_games):
     to_search = []
     counter = 0  # Counter for splitting the searches into twenties due to api max limit
     search_ids = ""
-    for game in games_to_check.iterrows():
-        search_ids += str(game[1]["id"]) + ","
+    for game in games_to_check:  # Iterate through each game that we want to check the suitability of
+        search_ids += str(game[0]) + ","  # Index 0 is the id, index 1 is the name
         counter += 1
         if counter % 20 == 0 or counter == len(games_to_check):
             search_ids = search_ids[:-1]
