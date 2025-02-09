@@ -7,7 +7,7 @@ def search_results(user_search):
         return [game.name for game in search_results]
 
 def find_id(game_name):
-    game_id = BoardGame.query.filter(BoardGame.name == game_name).first()
+    game_id = BoardGame.query.filter_by(name=game_name).first()
     return game_id.id
 
 def suitable_games():
