@@ -23,7 +23,7 @@ def add():
         print(matching_games)
         if len(matching_games) > 0:
             print(f"Valid search: {form.board_game.data}")
-            return render_template("add.html", form=form, results=results, games=matching_games["name"], amount_added=f"You currently have {len(session["selected_games"])} games added.")
+            return render_template("add.html", form=form, results=results, games=matching_games, amount_added=f"You currently have {len(session["selected_games"])} games added.")
         else:
             form.board_game.errors = [f"{form.board_game.data} could not be found!"]
             print(f"Invalid search: {form.board_game.data}")
