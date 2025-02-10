@@ -13,7 +13,9 @@ class BoardGame(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     name = db.Column(db.String(100), nullable=False)
     rank = db.Column(db.Integer, nullable=False)
+    bayesaverage = db.Column(db.Float, nullable=False)
     usersrated = db.Column(db.Integer, nullable=False)
+    is_expansion = db.Column(db.Boolean, nullable=False)
     mechanics = db.relationship(
         "Mechanic", # Related model
         secondary="board_game_mechanics", # Association table
