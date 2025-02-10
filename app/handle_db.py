@@ -10,12 +10,9 @@ def find_id(game_name):
     game_id = BoardGame.query.filter_by(name=game_name).first()
     return game_id.id
 
-def suitable_games():
-    sorted_games = BoardGame.query.order_by(BoardGame.usersrated.desc()).limit(500).all()  # Change the limit to however many games to test for
-    return tuple((game.id, game.name) for game in sorted_games)
 
-def game_details(game_id):
-    game = BoardGame.query.filter_by(id=game_id).first()
+def game_details(game_name):
+    game = BoardGame.query.filter_by(name=game_name).first()
     return game.mechanics
 
 def recommend_games(weighted_mechanics, user_games):
