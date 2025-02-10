@@ -1,7 +1,8 @@
 import os
 from flask import Flask
 from config import config
-from app.models.game import db
+from app.models import game
+from app.extensions import db, migrate
 
 def create_app():
 
@@ -12,6 +13,7 @@ def create_app():
     app.config.from_object(config[config_name])
 
     db.init_app(app)
+    migrate.init_app(app, db)
 
     from app.routes import board_games
     app.register_blueprint(board_games)
