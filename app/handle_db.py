@@ -6,9 +6,15 @@ def search_results(user_search):
         search_results = BoardGame.query.filter(BoardGame.name.ilike(f"%{user_search}%")).order_by(BoardGame.usersrated.desc()).all()
         return [game.name for game in search_results]
 
-def game_details(game_name):
-    game = BoardGame.query.filter_by(name=game_name).first()
-    return game.mechanics
+def calculate_weights(ratings):
+    weighted_mechanics = {}
+    for game in ratings:
+        game["mechanics"] = BoardGame.query.filter_by(name=game["game_name"]).first().mechanics
+        for mechanic in game["mechanics"]:
+            if mechanic not in weighted_mechanics:
+                weighted_mechanics[mechanic] = 0
+            weighted_mechanics[mechanic] += int(game["rating"])  # int conversion is necessary as the rating is a string
+    return weighted_mechanics
 
 def recommend_games(weighted_mechanics, user_games):
     game_scores = []
