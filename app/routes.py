@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, session
 from app.forms import SearchGame, PickGame, RateGame
-from app.handle_db import search_results, game_details, recommend_games
+from app.handle_db import search_results, recommend_games, calculate_weights
 board_games = Blueprint("board_games", __name__)
 
 
@@ -55,13 +55,7 @@ def rate():
 @board_games.route("/analysis", methods=["GET"])
 def analysis():
     ratings_data = session["ratings"]  # Fetches the data from the session; ratings_data holds game_name, rating, csrf_token
-    weighted_mechanics = {}
-    for game in ratings_data:
-        game["mechanics"] = game_details(game["game_name"])
-        for mechanic in game["mechanics"]:
-            if mechanic not in weighted_mechanics:
-                weighted_mechanics[mechanic] = 0
-            weighted_mechanics[mechanic] += int(game["rating"])
-    user_games = [game["game_name"] for game in ratings_data]
+    weighted_mechanics = calculate_weights(ratings_data)
+    user_games = tuple(game["game_name"] for game in ratings_data)
     recommended_games = recommend_games(weighted_mechanics, user_games)[:5]  # First 5 elements of the recommended games
     return render_template("analysis.html", recommended_games=recommended_games)
