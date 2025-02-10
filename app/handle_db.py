@@ -6,11 +6,6 @@ def search_results(user_search):
         search_results = BoardGame.query.filter(BoardGame.name.ilike(f"%{user_search}%")).order_by(BoardGame.usersrated.desc()).all()
         return [game.name for game in search_results]
 
-def find_id(game_name):
-    game_id = BoardGame.query.filter_by(name=game_name).first()
-    return game_id.id
-
-
 def game_details(game_name):
     game = BoardGame.query.filter_by(name=game_name).first()
     return game.mechanics
