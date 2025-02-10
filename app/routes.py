@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, session
 from app.forms import SearchGame, PickGame, RateGame
-from app.handle_db import search_results, find_id, game_details, recommend_games
+from app.handle_db import search_results, game_details, recommend_games
 board_games = Blueprint("board_games", __name__)
 
 
