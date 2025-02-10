@@ -15,27 +15,27 @@ A Flask web app that recommends board games based on what games the user likes a
 1. Clone the repository.
 
 2. (Optional but recommended) Set up a virtual environment:
-```sh
+```bash
 python3 -m venv venv
 ```
 3. Install required dependencies (assuming you already have pip):
-```sh
+```bash
 pip install -r requirements.txt
 ```
 4. Convert the sql dump to a database:
-```sh
+```bash
 sqlite3 boardgames.db < boardgames_dump.sql
 ```
 5. Activate foreign keys for the database:
-```sh
+```bash
 sqlite3 data/boardgames.db
 PRAGMA foreign_keys = ON;
 ```
 6. Generate an environment:
-```sh
+```bash
 python3 generate_env.py
 ```
 7. Run:
-```sh
+```bash
 python3 -m app.main
 ```
