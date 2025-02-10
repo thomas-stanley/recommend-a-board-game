@@ -1,6 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from app.extensions import db
 
 class BoardGameMechanic(db.Model):
     __tablename__ = "board_game_mechanics"
