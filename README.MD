@@ -24,7 +24,7 @@ pip install -r requirements.txt
 ```
 4. Convert the sql dump to a database:
 ```bash
-sqlite3 boardgames.db < boardgames_dump.sql
+sqlite3 data/boardgames.db < data/boardgames_dump.sql
 ```
 5. Activate foreign keys for the database:
 ```bash
