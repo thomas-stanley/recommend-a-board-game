@@ -4,8 +4,7 @@ from pathlib import Path
 
 def generate_env(environment):
     secret_key = secrets.token_urlsafe()
-    content = f"""
-SECRET_KEY={secret_key}
+    content = f"""SECRET_KEY={secret_key}
 FLASK_ENV={environment}
 DATABASE_URL=sqlite:///data/boardgames.db"""
     Path(".env").write_text(content)
