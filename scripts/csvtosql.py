@@ -1,3 +1,5 @@
+import sys
+sys.path.append(".")
 from flask import Flask
 import pandas as pd
 from app.models.game import db, BoardGame
@@ -19,8 +21,9 @@ with app.app_context():
         board_game = BoardGame(
             id=row["id"], 
             name=row["name"], 
-            rank=row["rank"], 
-            usersrated=row["usersrated"]
+            bayesaverage=row["bayesaverage"],
+            usersrated=row["usersrated"],
+            is_expansion=row["is_expansion"]
             )
 
 
