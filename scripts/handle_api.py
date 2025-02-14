@@ -1,7 +1,7 @@
 import requests
 from xml.etree import ElementTree as ET
 from time import sleep, time
-from app.models.game import db, BoardGame, Mechanic
+from app.models.game import db, BoardGame, Feature
 from flask import Flask
 import os
 
@@ -14,7 +14,7 @@ BGG_API_DELAY = 2
 
 db.init_app(app)
 
-def add_mechanics():
+def add_features():
     games = BoardGame.query.all()
     counter = 0
     search_ids = ""
@@ -24,22 +24,22 @@ def add_mechanics():
         if counter % 20 == 0 or counter == len(games):
             search_ids = search_ids[:-1]
             start = time()
-            game_mechanics = game_details(search_ids)
+            game_features = game_details(search_ids)
             search_ids = ""
 
-            for game_id, mechanics_list in game_mechanics.items():
-                print(f"{game_id}: {[mechanic[1] for mechanic in mechanics_list]}")
-                for game_mechanic in mechanics_list:
-                    mechanic = Mechanic.query.filter_by(id=game_mechanic[0]).first()
+            for game_id, features_list in game_features.items():
+                print(f"{game_id}: {[feature[1] for feature in features_list]}")
+                for game_feature in features_list:
+                    feature = Feature.query.filter_by(id=game_feature[0]).first()
                     
-                    if not mechanic:  # If the mechanic isn't already in the database
-                        mechanic = Mechanic(id=game_mechanic[0], name=game_mechanic[1])
-                        db.session.add(mechanic)
+                    if not feature:  # If the feature isn't already in the database
+                        feature = Feature(id=game_feature[0], name=game_feature[1])
+                        db.session.add(feature)
                         db.session.commit()
                     
                     current_game = BoardGame.query.filter_by(id=game_id).first()
-                    if mechanic not in current_game.mechanics:
-                        current_game.mechanics.append(mechanic)
+                    if feature not in current_game.features:
+                        current_game.features.append(feature)
                 db.session.commit()
             end = time()
             time_taken = round(end - start, 2)
@@ -47,9 +47,9 @@ def add_mechanics():
 
 
 def game_details(game_ids):
-    game_mechanics = {}
+    game_features = {}
     attempts = 0
-    url = f"https://www.boardgamegeek.com/xmlapi2/thing?id={game_ids}"
+    url = f"https://www.boardgamegeek.com/xmlapi2/thing?id={game_ids}&stats=1"
     response = requests.get(url)
     while response.status_code != 200:
         attempts += 1
@@ -62,14 +62,14 @@ def game_details(game_ids):
     all_board_games = tree.findall("item")
     for board_game in all_board_games:
         game_id = board_game.get("id")
-        mechanics = []
+        features = []
         for link in board_game.findall("link"):
-            if link.get("type") == "boardgamemechanic":
-                mechanics.append([int(link.get("id")), link.get("value")])  # Must make sure that the id is an integer
-        game_mechanics[game_id] = mechanics
-    return game_mechanics
+            if link.get("type") == "boardgamemechanic" or link.get("type") == "boardgamecategory":
+                features.append([int(link.get("id")), link.get("value")])  # Must make sure that the id is an integer
+        game_features[game_id] = features
+    return game_features
 
 
 if __name__ == "__main__":
     with app.app_context():
-        add_mechanics()
+        add_features()
