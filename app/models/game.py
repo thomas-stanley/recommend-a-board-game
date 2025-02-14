@@ -4,7 +4,7 @@ class BoardGameFeature(db.Model):
     __tablename__ = "board_game_features"
 
     board_game_id = db.Column(db.Integer, db.ForeignKey("board_game.id"), primary_key=True, nullable=False)
-    mechanic_id = db.Column(db.Integer, db.ForeignKey("feature.id"), primary_key=True, nullable=False)
+    feature_id = db.Column(db.Integer, db.ForeignKey("feature.id"), primary_key=True, nullable=False)
 
 
 class BoardGame(db.Model):
