@@ -25,7 +25,7 @@ class Feature(db.Model):
     __tablename__ = "feature"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    name = db.Column(db.String(100), nullable=False, unique=True)
+    name = db.Column(db.String(100), nullable=False)
     board_games = db.relationship(
         "BoardGame", # Related model
         secondary="board_game_features", # Association table
