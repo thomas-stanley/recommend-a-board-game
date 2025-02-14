@@ -55,7 +55,7 @@ def rate():
 @board_games.route("/analysis", methods=["GET"])
 def analysis():
     ratings_data = session["ratings"]  # Fetches the data from the session; ratings_data holds game_name, rating, csrf_token
-    weighted_mechanics = calculate_weights(ratings_data)
+    weighted_features = calculate_weights(ratings_data)
     user_games = tuple(game["game_name"] for game in ratings_data)
-    recommended_games = recommend_games(weighted_mechanics, user_games)[:5]  # First 5 elements of the recommended games
+    recommended_games = recommend_games(weighted_features, user_games)[:5]  # First 5 elements of the recommended games
     return render_template("analysis.html", recommended_games=recommended_games)

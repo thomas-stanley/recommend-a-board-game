@@ -7,21 +7,21 @@ def search_results(user_search):
         return [game.name for game in search_results]
 
 def calculate_weights(ratings):
-    weighted_mechanics = {}
+    weighted_features = {}
     for game in ratings:
-        game["mechanics"] = BoardGame.query.filter_by(name=game["game_name"]).first().mechanics
-        for mechanic in game["mechanics"]:
-            if mechanic not in weighted_mechanics:
-                weighted_mechanics[mechanic] = 0
-            weighted_mechanics[mechanic] += int(game["rating"])  # int conversion is necessary as the rating is a string
-    return weighted_mechanics
+        game["features"] = BoardGame.query.filter_by(name=game["game_name"]).first().features
+        for feature in game["features"]:
+            if feature not in weighted_features:
+                weighted_features[feature] = 0
+            weighted_features[feature] += int(game["rating"])  # int conversion is necessary as the rating is a string
+    return weighted_features
 
-def recommend_games(weighted_mechanics, user_games):
+def recommend_games(weighted_features, user_games):
     game_scores = []
     games = BoardGame.query.all()
     for game in games:
         if game.name not in user_games and not game.is_expansion:  # Makes sure that the game is not in the user's list and is not an expansion
-            total_score = game.bayesaverage * (sum(weighted_mechanics.get(mechanic, 0) for mechanic in game.mechanics))  # Sums all mechanics weights and adds 0 if no weight, then multiplies by the bayesaverage to favour higher rated games
+            total_score = game.bayesaverage * (sum(weighted_features.get(feature, 0) for feature in game.features))  # Sums all features weights and adds 0 if no weight, then multiplies by the bayesaverage to favour higher rated games
             game_scores.append((game.name, total_score))
     sorted_scores = sorted(game_scores, key=lambda x: x[1], reverse=True)  # Sort by the largest score first
     print(sorted_scores[:10])
