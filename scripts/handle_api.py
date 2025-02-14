@@ -1,3 +1,5 @@
+import sys
+sys.path.append(".")
 import requests
 from xml.etree import ElementTree as ET
 from time import sleep, time
