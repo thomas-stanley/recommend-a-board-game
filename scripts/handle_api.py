@@ -45,13 +45,15 @@ def add_features():
                 db.session.commit()
             end = time()
             time_taken = round(end - start, 2)
+            if time_taken < BGG_API_DELAY:
+                sleep(BGG_API_DELAY - time_taken)
             print(f"Time taken: {time_taken} seconds")
 
 
 def game_details(game_ids):
     game_features = {}
     attempts = 0
-    url = f"https://www.boardgamegeek.com/xmlapi2/thing?id={game_ids}&stats=1"
+    url = f"https://www.boardgamegeek.com/xmlapi2/thing?id={game_ids}"
     response = requests.get(url)
     while response.status_code != 200:
         attempts += 1
